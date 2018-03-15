@@ -9,6 +9,7 @@ class SampleGenerator
   attr_accessor :category
   def initialize(category)
     @category = category
+    raise ArgumentError.new("Invalid Category") unless Faker.const_get(@category)
   end
 
   def self.available_categories
@@ -33,6 +34,7 @@ class SampleGenerator
   end
 
   def generate(count, column_names)
+    raise ArgumentError.new("That isn't supported by the #{@category} generator") unless (column_names.map(&:to_sym) - available_methods).length == 0
     first, *rest = column_names.map { |method_name| generate_n_of(count, method_name) }
     first.zip(*rest).map(&:to_h)
   end
@@ -70,19 +72,19 @@ end
 
 class CLI
   class InvalidFormatError < StandardError; end
-  class InvalidCategoryError < StandardError; end
 
-  def initialize(format: nil, category: nil, count: nil, all: false)
+  def initialize(format: nil, category: nil, count: nil, all: false, keys: keys)
     @all = all
     @format = format
     @category = category
     @count = count
+    @keys = keys
   end
 
   def run
     get_category unless @category
     @generator = SampleGenerator.new(@category)
-    get_keys unless @all # just choose all the keys, then
+    get_keys unless @keys || @all # just choose all the keys, then
     get_format unless @format
     get_count unless @count
     @results = run_generator
@@ -122,7 +124,6 @@ class CLI
   def get_category
     prompt = "Choose a Category"
     @category = choose_among(prompt, SampleGenerator.available_categories.map(&:to_s))
-    raise ArgumentError.new("Invalid Category") unless Faker.const_get(@category)
   end
 
   def get_keys
@@ -151,6 +152,10 @@ OptionParser.new do |parser|
   parser.on("-c [CATEGORY]", "--category [CATEGORY]", SampleGenerator.available_categories,
     "Category for the generated records.") do |category|
       options[:category] = category
+  end
+
+  parser.on("-k [KEYS]", "--keys [KEYS]", "Which keys/columns for the generated records? Must fit the category, space separated") do |keys|
+    options[:keys] = keys.split(' ')
   end
 
   parser.on("-a", "--all", "All the keys for the category") do

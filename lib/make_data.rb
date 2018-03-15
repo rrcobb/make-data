@@ -72,12 +72,11 @@ class CLI
   class InvalidFormatError < StandardError; end
   class InvalidCategoryError < StandardError; end
 
-  def initialize(format: nil, category: nil, count: 100, all: false)
+  def initialize(format: nil, category: nil, count: nil, all: false)
     @all = all
     @format = format
     @category = category
     @count = count
-    puts "count: #{count} all: #{all} format: #{format} category: #{category}"
   end
 
   def run
@@ -85,6 +84,7 @@ class CLI
     @generator = SampleGenerator.new(@category)
     get_keys unless @all # just choose all the keys, then
     get_format unless @format
+    get_count unless @count
     @results = run_generator
     print_results
   end

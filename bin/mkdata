@@ -1,0 +1,33 @@
+#! /usr/bin/env ruby
+
+require 'optparse'
+require 'make_data'
+
+options = {}
+
+OptionParser.new do |parser|
+  parser.on("-n", "--count [COUNT]", OptionParser::DecimalInteger,
+    "How many records to generate") do |count|
+      options[:count] = count
+  end
+
+  parser.on("-f [FORMAT]", "--format [FORMAT]", MakeData::ResultsFormatter.valid_formats,
+    "Format for the generated records") do |format|
+      options[:format] = format
+  end
+
+  parser.on("-c [CATEGORY]", "--category [CATEGORY]", MakeData::SampleGenerator.available_categories,
+    "Category for the generated records.") do |category|
+      options[:category] = category
+  end
+
+  parser.on("-k [KEYS]", "--keys [KEYS]", "Which keys/columns for the generated records? Must fit the category, space separated") do |keys|
+    options[:keys] = keys.split(' ')
+  end
+
+  parser.on("-a", "--all", "All the keys for the category") do
+    options[:all] = true
+  end
+end.parse!
+
+MakeData::CLI.new(options).run

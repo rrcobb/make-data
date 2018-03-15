@@ -12,7 +12,7 @@ Read more https://github.com/peco/peco
 
 ```
 gem install make-data
-make-data
+mkdata
 ```
 
 Follow the prompts to select the category, keys, count, and format.

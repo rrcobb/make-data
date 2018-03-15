@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version     = '0.0.1'
   s.date        = '2018-03-15'
   s.summary     = "Generate fake data interactively!"
-  s.description = ->>DESCRIPTION
+  s.description = <<-DESCRIPTION
   # MakeData
   A CLI for generating fake json, csv, or yaml data.
 
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Rob Cobb"]
   s.email       = 'rwcobbjr@gmail.com'
   s.files       = ["lib/make_data.rb"]
+  s.executables << 'mkdata'
   s.homepage    =
   'http://rubygems.org/gems/make_data'
   s.license       = 'MIT'

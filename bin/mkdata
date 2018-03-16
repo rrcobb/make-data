@@ -21,8 +21,8 @@ OptionParser.new do |parser|
       options[:category] = category
   end
 
-  parser.on("-k [KEYS]", "--keys [KEYS]", "Which keys/columns for the generated records? Must fit the category, space separated") do |keys|
-    options[:keys] = keys.split(' ')
+  parser.on("-k x, y, z", "--keys x, y, z", Array, "Which keys/columns for the generated records? Must fit the category, space separated") do |keys|
+    options[:keys] = keys
   end
 
   parser.on("-a", "--all", "All the keys for the category") do

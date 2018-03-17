@@ -2,6 +2,7 @@
 
 require 'optparse'
 require 'make_data'
+require 'json'
 
 options = {}
 
@@ -16,17 +17,12 @@ OptionParser.new do |parser|
       options[:format] = format
   end
 
-  parser.on("-c [CATEGORY]", "--category [CATEGORY]", MakeData::SampleGenerator.available_categories,
-    "Category for the generated records.") do |category|
-      options[:category] = category
+  parser.on("-d", "--dry", "--dry-run", "Generate a shape, but don't actually generate the samples") do
+    options[:dry] = true
   end
 
-  parser.on("-k x, y, z", "--keys x, y, z", Array, "Which keys/columns for the generated records? Must fit the category, space separated") do |keys|
-    options[:keys] = keys
-  end
-
-  parser.on("-a", "--all", "All the keys for the category") do
-    options[:all] = true
+  parser.on("-c [FILENAME]", "--config [FILENAME]", "Filename with a shape to generate") do |filename|
+    options[:shape] = JSON.parse(File.read(filename))
   end
 end.parse!
 

@@ -84,15 +84,15 @@ module MakeData
     class InvalidFormatError < StandardError; end
 
     def initialize(format: nil, count: nil, shape: nil, dry: false)
-      @format = format
+      @dry = dry
+      @format = @dry ? :json : format
       @count = count
       @shape = shape
-      @dry = dry
     end
 
     def run
       @format ||= get_format
-      @count ||= get_count
+      @count ||= get_count unless @dry
       @shape ||= get_shape
       @results = @dry ? @shape : SampleGenerator.new(@shape).generate(@count)
       print_results
@@ -136,7 +136,7 @@ module MakeData
     end
 
     def get_shape(shape = {})
-      action = choose_among("What do you want to do?", ["Done", "Add a key"])
+      action = choose_among("What do you want to do?", ["Add a key", "Done"])
       case action
       when "Done"
         return shape
@@ -165,5 +165,3 @@ module MakeData
     end
   end
 end
-
-require 'pry'; binding.pry

@@ -91,9 +91,9 @@ module MakeData
     end
 
     def run
+      @shape ||= get_shape
       @format ||= get_format
       @count ||= get_count unless @dry
-      @shape ||= get_shape
       @results = @dry ? @shape : SampleGenerator.new(@shape).generate(@count)
       print_results
     end

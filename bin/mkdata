@@ -21,7 +21,7 @@ OptionParser.new do |parser|
     options[:dry] = true
   end
 
-  parser.on("-c [FILENAME]", "--config [FILENAME]", "Filename with a shape to generate") do |filename|
+  parser.on("-s [FILENAME]", "--shape [FILENAME]", "File path to a json specification for the shape of records to generate") do |filename|
     options[:shape] = JSON.parse(File.read(filename))
   end
 end.parse!

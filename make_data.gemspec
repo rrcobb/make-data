@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'make-data'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.date        = '2018-03-15'
   s.summary     = "Generate fake data interactively!"
   s.description = <<-DESCRIPTION
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   DESCRIPTION
   s.authors     = ["Rob Cobb"]
   s.email       = 'rwcobbjr@gmail.com'
-  s.files       = ["lib/make_data.rb"]
+  s.files       = ["lib/make_data.rb", "lib/runner.rb"]
   s.executables << 'mkdata'
   s.homepage    =
   'http://rubygems.org/gems/make_data'

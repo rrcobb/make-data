@@ -31,8 +31,9 @@ module MakeData
 
     # shape is a mapping from names to [category, method] pairs
     # so, { name => ['FunnyName', 'name'], location => ['GameOfThrones', 'location'] }
-    def initialize(shape)
+    def initialize(shape, ids)
       @shape = shape
+      @ids = ids
     end
 
     def self.generate(category_name, method_name)
@@ -40,13 +41,17 @@ module MakeData
     end
 
     def make_one_from_shape
-      @shape.transform_values do |category, method|
-        self.class.generate(category, method)
-      end
+      @shape.map do |category, method|
+        [category, self.class.generate(category, method)]
+      end.to_h
     end
 
     def generate(count)
-      Array.new(count).map { make_one_from_shape }
+      count.times.map do |id|
+        make_one_from_shape.tap do |sample|
+          sample[:id] = id if @ids
+        end
+      end
     end
   end
 
@@ -83,8 +88,9 @@ module MakeData
   class CLI
     class InvalidFormatError < StandardError; end
 
-    def initialize(format: nil, count: nil, shape: nil, dry: false)
+    def initialize(format: nil, ids: true, count: nil, shape: nil, dry: false)
       @dry = dry
+      @ids = ids
       @format = @dry ? :json : format
       @count = count
       @shape = shape
@@ -94,12 +100,12 @@ module MakeData
       @shape ||= get_shape
       @format ||= get_format
       @count ||= get_count unless @dry
-      @results = @dry ? @shape : SampleGenerator.new(@shape).generate(@count)
-      print_results
+      @results = @dry ? @shape : SampleGenerator.new(@shape, @ids).generate(@count)
+      print_results(@results)
     end
 
-    def print_results
-      print ResultsFormatter.new(@results, @format).format_results
+    def print_results(results, format = @format)
+      print ResultsFormatter.new(results, format).format_results
     end
 
     def get_format
@@ -136,6 +142,9 @@ module MakeData
     end
 
     def get_shape(shape = {})
+      puts "---"
+      print_results(shape, 'json')
+      puts "\n---"
       action = choose_among("What do you want to do?", ["Add a key", "Done"])
       case action
       when "Done"

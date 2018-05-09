@@ -1,8 +1,8 @@
 #! /usr/bin/env ruby
 
 require 'optparse'
-require 'make_data'
 require 'json'
+require_relative '../lib/make_data.rb'
 
 options = {}
 
@@ -19,6 +19,14 @@ OptionParser.new do |parser|
 
   parser.on("-d", "--dry", "--dry-run", "Generate a shape, but don't actually generate the samples") do
     options[:dry] = true
+  end
+
+  parser.on("--ids", "include an auto-incrementing id column") do
+    options[:ids] = true
+  end
+
+  parser.on("--no-ids", "do not include ids") do
+    options[:ids] = false
   end
 
   parser.on("-s [FILENAME]", "--shape [FILENAME]", "File path to a json specification for the shape of records to generate") do |filename|

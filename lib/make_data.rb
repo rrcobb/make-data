@@ -41,15 +41,16 @@ module MakeData
     end
 
     def make_one_from_shape
-      @shape.map do |category, method|
-        [category, self.class.generate(category, method)]
+      @shape.map do |category, (faker_class, method)|
+        [category, self.class.generate(faker_class, method)]
       end.to_h
     end
 
     def generate(count)
       count.times.map do |id|
         make_one_from_shape.tap do |sample|
-          sample[:id] = id if @ids
+          # start ids at 1
+          sample[:id] = id + 1 if @ids
         end
       end
     end
